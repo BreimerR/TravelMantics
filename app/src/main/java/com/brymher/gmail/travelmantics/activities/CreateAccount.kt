@@ -1,5 +1,6 @@
 package com.brymher.gmail.travelmantics.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -9,19 +10,10 @@ import com.brymher.gmail.travelmantics.lib.inputs.Password
 import com.brymher.gmail.travelmantics.models.User
 import kotlinx.android.synthetic.main.activity_create_account.*
 
-class CreateAccount : AppCompatActivity() {
+class CreateAccount : Base(R.layout.activity_create_account) {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_create_account)
-
-        init(savedInstanceState)
-    }
-
-
-
-    private fun init(savedInstanceState: Bundle?) {
-        signIn?.setOnClickListener {
+    override fun init(savedInstanceState: Bundle?) {
+        signUp?.setOnClickListener {
             val user = User()
 
             Toast.makeText(this@CreateAccount, password?.text ?: "", Toast.LENGTH_LONG).show()
@@ -36,7 +28,7 @@ class CreateAccount : AppCompatActivity() {
                     user.register(email, pwd, {
                         AlertDialog.Builder(this@CreateAccount).apply {
                             setTitle("Logged In")
-                            user.kind
+
                             show()
                         }
                     }) {
@@ -46,6 +38,12 @@ class CreateAccount : AppCompatActivity() {
                     Toast.makeText(this@CreateAccount, errors[0], Toast.LENGTH_LONG).show()
                 }
             }
+
+
+        }
+
+        signIn?.setOnClickListener {
+            startActivity(Intent(this, Welcome::class.java))
         }
     }
 

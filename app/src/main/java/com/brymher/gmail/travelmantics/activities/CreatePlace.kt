@@ -1,27 +1,51 @@
 package com.brymher.gmail.travelmantics.activities
 
-import android.content.Intent
-import android.content.res.Resources
-import androidx.appcompat.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import com.brymher.gmail.travelmantics.models.Place
+import android.content.Intent
+import android.content.res.Resources
+
 import com.squareup.picasso.Picasso
+import com.brymher.gmail.travelmantics.models.Place
 import com.brymher.gmail.travelmantics.data.Place as DPlace
 import kotlinx.android.synthetic.main.activity_create_place.*
 
 
-class CreatePlace : AppCompatActivity() {
+class CreatePlace : Base(R.layout.activity_create_place) {
+
+    override val menu: Int? = R.menu.admin
+
+    private val PIC_RES = 42
 
     var place: Place = Place()
 
     var dPlace: DPlace = DPlace(name = "")
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_create_place)
+    var imgData: Uri? = null
+
+    override fun init(savedInstanceState: Bundle?) {
+        initDisplayContent(savedInstanceState)
+
+    }
+
+    private fun initDisplayContent(savedInstanceState: Bundle?) {
+        initEvents()
+    }
+
+    private fun initEvents() {
+        pOverlayImage?.setOnClickListener {
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "image/jpeg"
+            intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true)
+            startActivityForResult(
+                Intent.createChooser(
+                    intent,
+                    "Insert Picture"
+                ), PIC_RES
+            )
+        }
     }
 
 
@@ -45,7 +69,7 @@ class CreatePlace : AppCompatActivity() {
 
     private fun savePlace() {
         Place().createPlace(
-            com.brymher.gmail.travelmantics.data.Place(
+            DPlace(
                 name = pName.text.toString(),
                 price = Integer.parseInt(pPrice.text.toString()),
                 description = pDesc.text.toString()
@@ -59,15 +83,12 @@ class CreatePlace : AppCompatActivity() {
         if (requestCode == 42 && resultCode == RESULT_OK) {
             data?.let { image ->
                 val imageUri = image.data
+                // prevent upload of un used image
+                imgData = image.data
 
                 Place().apply {
-
-                    uploadPlaceImage(imageUri) { snapShot, url ->
-                        //String url = taskSnapshot.getDownloadUrl().toString();
-                        val pictureName = snapShot.storage.path
+                    uploadPlaceImage(imageUri) { _, url ->
                         dPlace.profile_image = url
-                        Log.d("Url: ", url)
-                        Log.d("Name", pictureName)
                         showImage(url)
                     }
                 }
@@ -77,7 +98,7 @@ class CreatePlace : AppCompatActivity() {
     }
 
     private fun showImage(url: String) {
-        if (!url.isEmpty()) {
+        if (url.isNotEmpty()) {
 
             val width = Resources.getSystem().displayMetrics.widthPixels
 
