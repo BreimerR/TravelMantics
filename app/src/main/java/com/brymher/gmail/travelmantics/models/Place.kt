@@ -1,14 +1,13 @@
 package com.brymher.gmail.travelmantics.models
 
-import android.content.Context
 import android.net.Uri
-import android.util.Log
-import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 import com.brymher.gmail.travelmantics.data.Place as DPlace
 
 class Place : FireBaseModel() {
-    val storage = FirebaseStorage.getInstance()
-    mStorageRef = mStorage.getReference().child("deals_pictures")
+    private val STORAGE = FirebaseStorage.getInstance()
+    private val STORAGE_REG get() = STORAGE.reference.child("place_pictures")
 
     fun createPlace(place: DPlace) {
         if (place.id == null) {
@@ -18,20 +17,19 @@ class Place : FireBaseModel() {
         }
     }
 
-    fun uploadPlaceImage(imageUri: Uri?, context: Context) {
-        val ref = FirebaseUtil.mStorageRef.child(imageUri.getLastPathSegment());dbRef.child(imageUri!!.lastPathSegment)
+    fun uploadPlaceImage(imageUri: Uri?, onSuccess: (UploadTask.TaskSnapshot, String) -> Unit) {
 
-        dbRef.
-        dbRef.putFile(imageUri).addOnSuccessListener(context,
-            OnSuccessListener<Any> { taskSnapshot ->
-                val url = ref.getDownloadUrl().toString()
-                //String url = taskSnapshot.getDownloadUrl().toString();
-                val pictureName = taskSnapshot.getStorage().getPath()
-                deal.setImageUrl(url)
-                deal.setImageName(pictureName)
-                Log.d("Url: ", url)
-                Log.d("Name", pictureName)
-                showImage(url)
-            })
+        imageUri?.apply {
+            with(STORAGE_REG.child(lastPathSegment!!.toString())) {
+
+                putFile(imageUri).addOnSuccessListener {
+                    onSuccess(it, this.downloadUrl.toString())
+                }
+            }
+
+
+        }
+
+
     }
 }

@@ -9,7 +9,7 @@ data class Place(
     val id: String? = null,
     val name: String,
     val price: Int = 0,
-    val profile_image: String = "",
+    var profile_image: String = "",
     val description: String? = null
 ) :
     Parcelable {

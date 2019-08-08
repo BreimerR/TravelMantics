@@ -1,11 +1,15 @@
 package com.brymher.gmail.travelmantics.activities
 
 import android.content.Intent
+import android.content.res.Resources
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.brymher.gmail.travelmantics.models.Place
+import com.squareup.picasso.Picasso
+import com.brymher.gmail.travelmantics.data.Place as DPlace
 import kotlinx.android.synthetic.main.activity_create_place.*
 
 
@@ -13,6 +17,7 @@ class CreatePlace : AppCompatActivity() {
 
     var place: Place = Place()
 
+    var dPlace: DPlace = DPlace(name = "")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,12 +62,30 @@ class CreatePlace : AppCompatActivity() {
 
                 Place().apply {
 
-                    uploadPlaceImage(imageUri)
+                    uploadPlaceImage(imageUri) { snapShot, url ->
+                        //String url = taskSnapshot.getDownloadUrl().toString();
+                        val pictureName = snapShot.storage.path
+                        dPlace.profile_image = url
+                        Log.d("Url: ", url)
+                        Log.d("Name", pictureName)
+                        showImage(url)
+                    }
                 }
-
-
             }
 
+        }
+    }
+
+    private fun showImage(url: String) {
+        if (!url.isEmpty()) {
+
+            val width = Resources.getSystem().displayMetrics.widthPixels
+
+            Picasso.get()
+                .load(url)
+                .resize(width, width * 2 / 3)
+                .centerCrop()
+                .into(pImage)
         }
     }
 
