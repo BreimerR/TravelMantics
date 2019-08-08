@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+            android:icon="@drawable/ic_pen"
+            android:iconTint="@color/textAccent"
+            android:title="@string/edit_user"
+            android:id="@+id/edit_user"
+            app:showAsAction="ifRoom"/>
+    <item
+            android:icon="@drawable/ic_pen"
+            android:id="@+id/add_place"
+            app:showAsAction="collapseActionView"
+            android:title="@string/add_place"/>
+</menu>

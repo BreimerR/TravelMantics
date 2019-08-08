@@ -1,5 +1,10 @@
 package com.brymher.gmail.travelmantics.models
 
-class Model {
+open class Model {
+
+    var errors = arrayOf<String>()
+
+    val hasErrors: Boolean get() = errors.isNotEmpty()
+
 
 }
