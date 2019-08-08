@@ -38,6 +38,11 @@ open class User : FireBaseAuthModel() {
             return false
         }
 
+    val sendVerification: Unit
+        get() {
+            auth.currentUser?.sendEmailVerification()
+        }
+
     var isAdmin: Boolean = false
 
     fun <T : Validatable<String>, V : Validatable<String>, N : Validatable<String>> register(
@@ -81,7 +86,7 @@ open class User : FireBaseAuthModel() {
                             )
                         ).addOnSuccessListener {
                             success()
-                            auth.currentUser?.sendEmailVerification()
+                            sendVerification
                             auth.signOut()
                         }.addOnFailureListener {
                             fail(Validation.DATABASE_UPDATE_FAIL)

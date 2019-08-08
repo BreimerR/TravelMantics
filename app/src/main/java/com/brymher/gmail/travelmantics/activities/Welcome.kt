@@ -1,20 +1,18 @@
 package com.brymher.gmail.travelmantics.activities
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import com.brymher.gmail.travelmantics.models.User
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
-import com.brymher.gmail.travelmantics.models.User
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.tasks.OnCompleteListener
 import kotlinx.android.synthetic.main.activity_welcome.*
 
-class Welcome : Base(R.layout.activity_welcome), OnCompleteListener<AuthResult> {
+class Welcome : DialogActivity(R.layout.activity_welcome), OnCompleteListener<AuthResult> {
 
-    var user: User? = null
+    lateinit var user: User
 
     override fun init(savedInstanceState: Bundle?) {
         initUser()
@@ -25,7 +23,7 @@ class Welcome : Base(R.layout.activity_welcome), OnCompleteListener<AuthResult> 
         accessControls?.visibility = View.VISIBLE
 
         val signInAction: (View) -> Unit = {
-            startActivity(CreateAccount::class.java)
+            startActivity(this, CreateAccount::class.java)
         }
 
         emailSignIn?.setOnClickListener(signInAction)
@@ -40,30 +38,36 @@ class Welcome : Base(R.layout.activity_welcome), OnCompleteListener<AuthResult> 
     }
 
     private fun initUser() {
-        val user = User()
+        user = User().apply {
+            when {
 
-        when {
-            !user.isSignedIn -> {
+                isSignedIn -> {
+                    if (!isVerified) showDialog {
+                        setTitle("Resend Verification")
+                        setPositiveButton("Send") { _, _ ->
+                            // send email verification details
+                            user.apply {
+                                sendVerification
+                            }
+                        }
 
-            }
+                        setNegativeButton("Register account") { _, _ ->
+                            startActivity(this@Welcome, CreateAccount::class.java)
+                        }
 
-            !user.isVerified -> {
-                AlertDialog.Builder(this).apply {
-                    setTitle("Resend Verification")
-                    setPositiveButton("Send") { _, _ ->
-
+                        setNeutralButton("Cancel") { it, _ ->
+                            it.dismiss()
+                        }
+                        show()
                     }
-
-                    setNegativeButton("") { _, _ ->
-
-                    }
-
-                    show()
                 }
+
+
+                else -> startActivity(Intent(this@Welcome, Places::class.java))
+
             }
-            else -> {
-                startActivity(Intent(this, Places::class.java))
-            }
+
+
         }
     }
 
@@ -71,11 +75,10 @@ class Welcome : Base(R.layout.activity_welcome), OnCompleteListener<AuthResult> 
         if (task.isComplete)
             Toast.makeText(this, "complete", Toast.LENGTH_LONG).show()
 
-        if (task.isCanceled)
-            Toast.makeText(this, "canceled", Toast.LENGTH_LONG).show()
-
-        if (task.isSuccessful)
-            Toast.makeText(this, "successful", Toast.LENGTH_LONG).show()
+        when {
+            task.isCanceled -> Toast.makeText(this, "canceled", Toast.LENGTH_LONG).show()
+            task.isSuccessful -> Toast.makeText(this, "successful", Toast.LENGTH_LONG).show()
+        }
 
 
     }
