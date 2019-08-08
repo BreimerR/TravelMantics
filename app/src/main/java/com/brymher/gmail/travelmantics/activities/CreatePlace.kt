@@ -63,7 +63,7 @@ class CreatePlace : Base(R.layout.activity_create_place) {
                 return true
             }
 
-            else -> true
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -75,6 +75,13 @@ class CreatePlace : Base(R.layout.activity_create_place) {
                 description = pDesc.text.toString()
             )
         )
+
+        Place().apply {
+            uploadPlaceImage(imgData) { _, url ->
+                dPlace.profile_image = url
+                showImage(url)
+            }
+        }
     }
 
 
@@ -85,15 +92,24 @@ class CreatePlace : Base(R.layout.activity_create_place) {
                 val imageUri = image.data
                 // prevent upload of un used image
                 imgData = image.data
+                showImage()
 
-                Place().apply {
-                    uploadPlaceImage(imageUri) { _, url ->
-                        dPlace.profile_image = url
-                        showImage(url)
-                    }
-                }
             }
 
+        }
+    }
+
+    private fun showImage() {
+        imgData?.let {
+
+            val width = Resources.getSystem().displayMetrics.widthPixels
+
+            pImage.setImageURI(imgData)
+            Picasso.get()
+                .load(it)
+                .resize(width, width * 2 / 3)
+                .centerCrop()
+                .into(pImage)
         }
     }
 

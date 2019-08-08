@@ -26,10 +26,6 @@ class Place : FireBaseModel() {
                     onSuccess(it, this.downloadUrl.toString())
                 }
             }
-
-
         }
-
-
     }
 }

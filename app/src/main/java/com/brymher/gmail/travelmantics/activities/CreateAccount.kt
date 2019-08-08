@@ -6,37 +6,34 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.brymher.gmail.travelmantics.lib.inputs.Email
+import com.brymher.gmail.travelmantics.lib.inputs.Name
 import com.brymher.gmail.travelmantics.lib.inputs.Password
 import com.brymher.gmail.travelmantics.models.User
 import kotlinx.android.synthetic.main.activity_create_account.*
 
 class CreateAccount : Base(R.layout.activity_create_account) {
 
+    var user: User? = null
+
     override fun init(savedInstanceState: Bundle?) {
         signUp?.setOnClickListener {
-            val user = User()
 
-            Toast.makeText(this@CreateAccount, password?.text ?: "", Toast.LENGTH_LONG).show()
+            user = User()
 
-
-            user.apply {
-
+            user?.apply {
                 val email = Email(email?.text.toString())
                 val pwd = Password(password?.text.toString(), passwordR?.text.toString())
 
-                if (validateInputs(email, pwd)) {
-                    user.register(email, pwd, {
-                        AlertDialog.Builder(this@CreateAccount).apply {
-                            setTitle("Logged In")
-
-                            show()
-                        }
-                    }) {
-
-                    }
+                val n = fName.text.toString()
+                val name = if (n.isEmpty()) {
+                    n
                 } else {
-                    Toast.makeText(this@CreateAccount, errors[0], Toast.LENGTH_LONG).show()
+                    val e = email.value
+
+                    e.substring(0 until e.indexOf('@'))
                 }
+
+                register(email, pwd, Name(name), onRegisterSuccess, onRegisterFail)
             }
 
 
@@ -45,6 +42,37 @@ class CreateAccount : Base(R.layout.activity_create_account) {
         signIn?.setOnClickListener {
             startActivity(Intent(this, Welcome::class.java))
         }
+    }
+
+
+    private val onRegisterSuccess = {
+        val d = AlertDialog.Builder(this@CreateAccount).apply {
+            setTitle("Logged In")
+        }.show()
+    }
+
+    val onRegisterFail = { it: Int ->
+        when (it) {
+            User.Validation.AUTH_CANCELED -> {
+                Toast.makeText(this, "Upload Canceled", Toast.LENGTH_LONG).show()
+            }
+            User.Validation.AUTH_EMPTY -> {
+                Toast.makeText(this, "Auth failed to connect", Toast.LENGTH_LONG).show()
+            }
+            User.Validation.INVALID_INPUTS -> {
+                Toast.makeText(this, "Invalid Inputs", Toast.LENGTH_LONG).show()
+            }
+            User.Validation.SUCESS_LOGG_IN -> {
+                Toast.makeText(this, "Successful", Toast.LENGTH_LONG).show()
+            }
+            User.Validation.DATABASE_UPDATE_FAIL -> {
+                Toast.makeText(this, "Failed to communicate with database", Toast.LENGTH_LONG).show()
+            }
+        }
+        if (user!!.hasErrors) {
+            Toast.makeText(this@CreateAccount, user!!.errors[0], Toast.LENGTH_LONG).show()
+        }
+
     }
 
 }

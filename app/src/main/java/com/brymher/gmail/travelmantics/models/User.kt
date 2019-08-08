@@ -40,19 +40,19 @@ open class User : FireBaseAuthModel() {
 
     var isAdmin: Boolean = false
 
-    fun <T : Validatable<String>, V : Validatable<String>> register(
+    fun <T : Validatable<String>, V : Validatable<String>, N : Validatable<String>> register(
         email: T,
         password: V,
+        name: N,
         success: () -> Unit,
         fail: (Int) -> Unit
     ) {
         if (validateInputs(email, password)) {
-            auth?.let {
-                createUser(it, email.value, password.value, success = success, fail = fail)
-                return@let
+            if (auth != null) {
+                createUser(auth, email.value, password.value, name = name.value, success = success, fail = fail)
+            } else {
+                fail(Validation.AUTH_EMPTY)
             }
-
-            fail(Validation.AUTH_EMPTY)
         } else fail(Validation.INVALID_INPUTS)
     }
 
@@ -61,7 +61,7 @@ open class User : FireBaseAuthModel() {
         auth: FirebaseAuth,
         email: String,
         password: String,
-        name: String? = null,
+        name: String,
         type: Boolean = false,
         success: () -> Unit,
         fail: (Int) -> Unit
@@ -70,13 +70,13 @@ open class User : FireBaseAuthModel() {
             if (it.isSuccessful) {
                 val uid = auth.currentUser?.uid as String
 
-                with(dbRef) {
+                dbRef.apply {
                     child("users")
                         .child(uid)
                         .setValue(
                             AUser(
                                 uid,
-                                "Breimer",
+                                name,
                                 type
                             )
                         ).addOnSuccessListener {

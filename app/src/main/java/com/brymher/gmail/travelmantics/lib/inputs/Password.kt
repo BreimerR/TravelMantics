@@ -16,14 +16,14 @@ class Password(password: String, private val repeat: String, val minSize: Int = 
         }
     )
 
-    private val ERRORS = arrayOf("s do not match", " too short", " too long")
+    private val ERRORS = arrayOf("'s do not match", " too short", " too long")
 
     override fun validate(): Boolean {
         var i = 0
         for (test in tests) {
 
             if (!test()) {
-                error = ERRORS[i]
+                error = "Password" + ERRORS[i]
                 return false
             }
 

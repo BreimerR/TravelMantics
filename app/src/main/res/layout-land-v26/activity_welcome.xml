@@ -52,6 +52,7 @@
         </LinearLayout>
 
         <com.google.android.gms.common.SignInButton
+                android:tooltipText="Use your google account"
                 android:id="@+id/googleSignIn"
                 android:textAlignment="textStart"
                 android:layout_width="match_parent"

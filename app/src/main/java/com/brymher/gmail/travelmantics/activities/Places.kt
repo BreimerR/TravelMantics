@@ -5,13 +5,12 @@ import android.os.Bundle
 import android.view.Menu
 import com.brymher.gmail.travelmantics.models.User
 
-class Places : AppCompatActivity() {
+class Places : Base(R.layout.activity_places) {
 
     val user = User()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_places)
+    override fun init(savedInstanceState: Bundle?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

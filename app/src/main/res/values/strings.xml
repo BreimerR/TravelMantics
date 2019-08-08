@@ -1,17 +1,19 @@
 <resources>
+    <string name="save">Save</string>
+    <string name="email">Email</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="password">Password</string>
+    <string name="add_place">Add Place</string>
+    <string name="edit_user">Edit User</string>
+    <string name="first_name">First Name</string>
     <string name="app_name">TravelMantics</string>
+    <string name="second_name">Second Name</string>
+    <string name="description">description</string>
+    <string name="change_image">Change Image</string>
+    <string name="have_acc">Have an account?</string>
+    <string name="location_name">Location Name</string>
+    <string name="repeat_password">Repeat Password</string>
+    <string name="cost_value">Travel Costs in Ksh.</string>
     <string name="email_sign_in">Sign in with Email</string>
     <string name="travel_mode">Travel safe \n Travel far \n Travel Planned \n Travel WIth US</string>
-    <string name="email">Email</string>
-    <string name="password">Password</string>
-    <string name="repeat_password">Repeat Password</string>
-    <string name="sign_up">Sign Up</string>
-    <string name="have_acc">Have an account?</string>
-    <string name="second_name">Second Name</string>
-    <string name="first_name">First Name</string>
-    <string name="location_name">Location Name</string>
-    <string name="cost_value">Travel Costs in Ksh.</string>
-    <string name="save">Save</string>
-    <string name="edit_user">Edit User</string>
-    <string name="add_place">Add Place</string>
 </resources>

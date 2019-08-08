@@ -2,9 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
 
     <com.google.android.material.textfield.TextInputLayout
             android:layout_width="395dp"
@@ -12,8 +14,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/textInputLayout6"
-            android:layout_marginTop="120dp"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_marginTop="88dp"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintHorizontal_bias="0.047">
 
         <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/pName"
@@ -48,47 +50,46 @@
                 android:id="@+id/pDesc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/description"/>
+                android:hint="description"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="300dp"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout8"
-            app:layout_constraintEnd_toEndOf="@+id/textInputLayout8"
-            app:layout_constraintStart_toStartOf="@+id/textInputLayout8"
-            android:layout_marginTop="100dp"
+            android:layout_width="0dp"
+            android:layout_height="300dp"
+            app:layout_constraintStart_toEndOf="@+id/textInputLayout7"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="40dp" android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="71dp">
 
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent">
-        <ImageView
-                android:padding="4dp"
-                android:id="@+id/pImage"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:srcCompat="@android:color/transparent"/>
         <ImageView
                 android:id="@+id/pOverlayImage"
+                android:background="#2C000000"
                 android:padding="120dp"
                 android:src="@drawable/ic_image"
-                android:elevation="4dp"
+                android:elevation="2dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
         <TextView
                 android:padding="4dp"
                 android:elevation="4dp"
-                android:background="#5B000000"
                 android:layout_marginTop="184dp"
                 android:text="@string/change_image"
                 android:layout_width="wrap_content"
-                android:textColor="@color/textAccent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/pImage"/>
 
+        <ImageView
+                android:id="@+id/pImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+
+                app:srcCompat="@android:color/transparent" app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintHorizontal_bias="0.0"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

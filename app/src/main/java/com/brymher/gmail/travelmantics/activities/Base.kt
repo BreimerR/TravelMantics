@@ -18,7 +18,7 @@ abstract class Base(private val LAYOUT: Int) : AppCompatActivity() {
 
     protected abstract fun init(savedInstanceState: Bundle?)
 
-    fun startActivity(clazz: Class<CreateAccount>) {
+    protected fun startActivity(clazz: Class<CreateAccount>) {
         startActivity(Intent(baseContext, clazz))
     }
 
@@ -28,4 +28,6 @@ abstract class Base(private val LAYOUT: Int) : AppCompatActivity() {
             return true
         } else super.onCreateOptionsMenu(menu)
     }
+
+
 }

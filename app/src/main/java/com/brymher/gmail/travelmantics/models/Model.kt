@@ -6,5 +6,4 @@ open class Model {
 
     val hasErrors: Boolean get() = errors.isNotEmpty()
 
-
 }
