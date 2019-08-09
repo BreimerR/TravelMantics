@@ -108,6 +108,7 @@ class Welcome : DialogActivity(R.layout.activity_welcome), OnCompleteListener<Au
     fun regUser(it: View) {
         dialog?.dismiss()
         startActivity(this, CreateAccount::class.java)
+
     }
 
     fun signInUser(view: View) {
@@ -123,6 +124,7 @@ class Welcome : DialogActivity(R.layout.activity_welcome), OnCompleteListener<Au
                     Toast.makeText(this, "Signed In", Toast.LENGTH_LONG).show()
                     dialog?.dismiss()
                     startActivity(this, Places::class.java)
+                    finish()
                 } else {
                     // sign out the user
                     FirebaseAuth.getInstance().signOut()

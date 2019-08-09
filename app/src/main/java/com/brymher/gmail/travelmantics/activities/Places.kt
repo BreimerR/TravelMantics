@@ -1,17 +1,14 @@
 package com.brymher.gmail.travelmantics.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.brymher.gmail.travelmantics.models.Place
-import com.brymher.gmail.travelmantics.data.Place as DPlace
-import com.brymher.gmail.travelmantics.adapters.Place as PlaceAdapter
 import com.brymher.gmail.travelmantics.models.User
-import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
+import com.brymher.gmail.travelmantics.adapters.Place as PlaceAdapter
+import com.brymher.gmail.travelmantics.data.Place as DPlace
 
 class Places : Base(R.layout.activity_places) {
     override val menu: Int? = R.menu.main
@@ -26,8 +23,12 @@ class Places : Base(R.layout.activity_places) {
     }
 
     fun initAdapter() {
-        val places =  findViewById<RecyclerView>(R.id.places)
-        places.adapter = PlaceAdapter(this)
+        val places = findViewById<RecyclerView>(R.id.places)
+
+        places.apply {
+            layoutManager = LinearLayoutManager(this@Places)
+            adapter = PlaceAdapter(this@Places)
+        }
 
     }
 

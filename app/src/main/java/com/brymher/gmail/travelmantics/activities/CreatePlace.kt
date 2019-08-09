@@ -75,7 +75,7 @@ class CreatePlace : Base(R.layout.activity_create_place) {
             DPlace(
                 name = pName.text.toString(),
                 price = Integer.parseInt(pPrice.text.toString()),
-                description = pDesc.text.toString()
+                desc = pDesc.text.toString()
             ), {
                 Toast.makeText(this, "Uploaded Place", Toast.LENGTH_LONG).show()
             }
@@ -88,7 +88,7 @@ class CreatePlace : Base(R.layout.activity_create_place) {
         // upload image first then save the place data
         Place().apply {
             uploadPlaceImage(imgData) { _, url ->
-                dPlace.profile_image = url
+                dPlace.image = url
                 showImage(url)
             }
         }

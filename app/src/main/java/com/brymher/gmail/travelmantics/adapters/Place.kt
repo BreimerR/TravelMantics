@@ -1,5 +1,6 @@
 package com.brymher.gmail.travelmantics.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +15,8 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.brymher.gmail.travelmantics.data.Place as DPlace
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.core.Context
 import com.squareup.picasso.Picasso
-import kotlin.coroutines.coroutineContext
+import org.json.JSONObject
 
 
 class Place(val context: AppCompatActivity) : RecyclerView.Adapter<Place.ViewHolder>() {
@@ -31,9 +31,9 @@ class Place(val context: AppCompatActivity) : RecyclerView.Adapter<Place.ViewHol
 
     init {
         val placeModel = com.brymher.gmail.travelmantics.models.Place()
-        placeModel.dbRef.addChildEventListener(object : ChildEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-                Toast.makeText(this@Place.context, "se", Toast.LENGTH_LONG).show()
+        placeModel.dbRef.child("places").addChildEventListener(object : ChildEventListener {
+            override fun onCancelled(e: DatabaseError) {
+                Toast.makeText(this@Place.context, e.message, Toast.LENGTH_LONG).show()
             }
 
             override fun onChildMoved(p0: DataSnapshot, p1: String?) {
@@ -47,7 +47,9 @@ class Place(val context: AppCompatActivity) : RecyclerView.Adapter<Place.ViewHol
             override fun onChildAdded(snapshot: DataSnapshot, id: String?) {
                 snapshot.getValue(DPlace::class.java)?.let {
                     it.id = snapshot.key
+                    Log.d("Place", it.name)
                     places += it
+                    notifyItemInserted(places.size - 1)
                 }
             }
 
@@ -66,7 +68,7 @@ class Place(val context: AppCompatActivity) : RecyclerView.Adapter<Place.ViewHol
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val place_image = view.findViewById<ImageView>(R.id.place_image)
-        val place_name = view.findViewById<TextView>(R.id.place_image)
+        val place_name = view.findViewById<TextView>(R.id.place_name)
         val place_price = view.findViewById<TextView>(R.id.place_price)
         val place_description = view.findViewById<TextView>(R.id.place_desc)
 
@@ -82,14 +84,18 @@ class Place(val context: AppCompatActivity) : RecyclerView.Adapter<Place.ViewHol
 
         fun bind(place: com.brymher.gmail.travelmantics.data.Place) {
             place_name.text = place.name
-            place_description.text = place.description
+            place_description.text = place.desc
             place_price.text = place.price.toString()
 
-            Picasso.get()
-                .load(place.profile_image)
-                .resize(160, 160)
-                .centerCrop()
-                .into(place_image)
+            place.image?.let {
+                if (it.isNotEmpty()) {
+                    Picasso.get()
+                        .load(place.image)
+                        .resize(160, 160)
+                        .centerCrop()
+                        .into(place_image)
+                }
+            }
         }
 
     }

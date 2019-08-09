@@ -7,21 +7,25 @@ import com.google.firebase.database.IgnoreExtraProperties
 @IgnoreExtraProperties
 data class Place(
     var id: String? = null,
-    val name: String,
-    val price: Int = 0,
-    var profile_image: String = "",
-    val description: String? = null
+    val name: String?,
+    val price: Int? = 0,
+    var image: String? = "",
+    val desc: String? = null
 ) :
     Parcelable {
     override fun writeToParcel(parcel: Parcel?, flags: Int) {
         parcel?.apply {
             writeString(id)
             writeString(name)
-            writeInt(price)
-            writeString(profile_image)
-            writeString(description)
+            writeInt(price ?: 0)
+            writeString(image)
+            writeString(desc)
         }
     }
+
+
+    constructor() : this(null, null, null)
+
 
     override fun describeContents(): Int {
         return 0
