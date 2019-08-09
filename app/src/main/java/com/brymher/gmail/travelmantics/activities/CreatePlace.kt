@@ -11,11 +11,14 @@ import android.widget.Toast
 
 import com.squareup.picasso.Picasso
 import com.brymher.gmail.travelmantics.models.Place
+import com.brymher.gmail.travelmantics.models.User
 import com.brymher.gmail.travelmantics.data.Place as DPlace
 import kotlinx.android.synthetic.main.activity_create_place.*
 
 
 class CreatePlace : Base(R.layout.activity_create_place) {
+
+    val user = User()
 
     override val menu: Int? = R.menu.admin
 
@@ -55,6 +58,12 @@ class CreatePlace : Base(R.layout.activity_create_place) {
             R.id.save_place -> {
                 savePlace()
                 return true
+            }
+
+            R.id.sign_out -> {
+                user.signOut()
+                startActivity(this, Welcome::class.java)
+                true
             }
 
             else -> super.onOptionsItemSelected(item)

@@ -163,4 +163,9 @@ class Welcome : DialogActivity(R.layout.activity_welcome), OnCompleteListener<Au
     fun bodyClick(it: View) {
         dialog?.dismiss()
     }
+
+    override fun onStop() {
+        super.onStop()
+
+    }
 }

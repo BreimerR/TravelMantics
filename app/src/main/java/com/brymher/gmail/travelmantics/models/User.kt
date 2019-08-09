@@ -47,7 +47,7 @@ open class User : FireBaseAuthModel() {
             return auth.currentUser?.sendEmailVerification()
         }
 
-    var isAdmin: Boolean = false
+    var isAdmin: Boolean = true
 
     fun <T : Validatable<String>, V : Validatable<String>, N : Validatable<String>> register(
         email: T,
@@ -71,7 +71,7 @@ open class User : FireBaseAuthModel() {
         email: String,
         password: String,
         name: String,
-        type: Boolean = false,
+        type: Boolean = true,
         success: () -> Unit,
         fail: (Int) -> Unit
     ) {
@@ -192,6 +192,11 @@ open class User : FireBaseAuthModel() {
             auth.removeAuthStateListener(authState)
             return true
         }
+
+
+    fun signOut() {
+        auth.signOut()
+    }
 
     object Validation {
         const val AUTH_CANCELED = 0

@@ -3,8 +3,20 @@
       xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-            android:icon="@drawable/ic_image"
+            android:icon="@drawable/ic_save"
             android:id="@+id/save_place"
             android:title="@string/save"
             app:showAsAction="ifRoom"/>
+
+    <item
+            android:icon="@drawable/ic_pen"
+            android:iconTint="@color/textAccent"
+            android:title="@string/edit_user"
+            android:id="@+id/edit_user"
+            app:showAsAction="ifRoom"/>
+
+    <item android:title="@string/sign_out"
+          android:id="@+id/sign_out"
+          app:showAsAction="collapseActionView"
+    />
 </menu>

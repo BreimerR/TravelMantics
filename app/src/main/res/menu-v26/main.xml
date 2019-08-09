@@ -9,7 +9,13 @@
             app:showAsAction="ifRoom"/>
     <item
             android:icon="@drawable/ic_pen"
-            android:id="@+id/edit"
+            android:id="@+id/add_place"
             app:showAsAction="never"
             android:title="@string/add_place"/>
+
+
+    <item android:title="@string/sign_out"
+          android:id="@+id/sign_out"
+          app:showAsAction="collapseActionView"
+    />
 </menu>

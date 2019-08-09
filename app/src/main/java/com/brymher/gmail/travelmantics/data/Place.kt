@@ -6,7 +6,7 @@ import com.google.firebase.database.IgnoreExtraProperties
 
 @IgnoreExtraProperties
 data class Place(
-    val id: String? = null,
+    var id: String? = null,
     val name: String,
     val price: Int = 0,
     var profile_image: String = "",
