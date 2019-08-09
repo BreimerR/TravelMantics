@@ -1,7 +1,7 @@
 package com.brymher.gmail.travelmantics.lib.inputs
 
 class Password(password: String, private val repeat: String, val minSize: Int = 5, val maxSize: Int = 10) :
-    Validatable<String>(password) {
+    StringValidatable(password) {
 
     val tests = arrayOf(
         {
@@ -32,4 +32,11 @@ class Password(password: String, private val repeat: String, val minSize: Int = 
 
         return true
     }
+
+    class SignIn(password: String) : StringValidatable(password) {
+        override fun validate(): Boolean {
+            return value.isNotEmpty()
+        }
+    }
+
 }

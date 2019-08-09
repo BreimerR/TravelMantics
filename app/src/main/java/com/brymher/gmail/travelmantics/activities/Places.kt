@@ -18,6 +18,7 @@ class Places : Base(R.layout.activity_places) {
         return onCreateOptionsMenu(menu) {
             val insertMenu = menu?.findItem(R.id.add_place)
             insertMenu?.isVisible = user.isAdmin
+
         }
     }
 

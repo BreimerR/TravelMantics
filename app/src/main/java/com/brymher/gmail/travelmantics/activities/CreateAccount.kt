@@ -1,9 +1,8 @@
 package com.brymher.gmail.travelmantics.activities
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import android.content.Intent
 import androidx.appcompat.app.AlertDialog
 import com.brymher.gmail.travelmantics.lib.inputs.Email
 import com.brymher.gmail.travelmantics.lib.inputs.Name
@@ -11,8 +10,9 @@ import com.brymher.gmail.travelmantics.lib.inputs.Password
 import com.brymher.gmail.travelmantics.models.User
 import kotlinx.android.synthetic.main.activity_create_account.*
 
-class CreateAccount : Base(R.layout.activity_create_account) {
+class CreateAccount : DialogActivity(R.layout.activity_create_account) {
 
+    // models interact with base data classes
     var user: User? = null
 
     override fun init(savedInstanceState: Bundle?) {
@@ -25,6 +25,7 @@ class CreateAccount : Base(R.layout.activity_create_account) {
                 val pwd = Password(password?.text.toString(), passwordR?.text.toString())
 
                 val n = fName.text.toString()
+
                 val name = if (n.isEmpty()) {
                     n
                 } else {
@@ -48,6 +49,8 @@ class CreateAccount : Base(R.layout.activity_create_account) {
     private val onRegisterSuccess = {
         val d = AlertDialog.Builder(this@CreateAccount).apply {
             setTitle("Logged In")
+            // show sign in dialog
+
         }.show()
     }
 
@@ -74,5 +77,8 @@ class CreateAccount : Base(R.layout.activity_create_account) {
         }
 
     }
+
+
+
 
 }

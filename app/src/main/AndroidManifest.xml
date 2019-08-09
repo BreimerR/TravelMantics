@@ -12,6 +12,7 @@
         <activity android:name=".Places">
         </activity>
         <activity android:name=".CreatePlace">
+
         </activity>
         <activity android:name=".CreateAccount">
         </activity>

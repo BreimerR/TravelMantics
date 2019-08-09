@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme.AlertDialog" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/transparentTint</item>
+    </style>
+
+    <color name="transparentTint">#75000000</color>
 </resources>

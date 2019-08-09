@@ -1,11 +1,13 @@
 package com.brymher.gmail.travelmantics.activities
 
+import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.content.Intent
 import android.content.res.Resources
+import android.widget.Toast
 
 import com.squareup.picasso.Picasso
 import com.brymher.gmail.travelmantics.models.Place
@@ -48,14 +50,6 @@ class CreatePlace : Base(R.layout.activity_create_place) {
         }
     }
 
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.admin, menu)
-
-        return true
-    }
-
-
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.save_place -> {
@@ -73,9 +67,16 @@ class CreatePlace : Base(R.layout.activity_create_place) {
                 name = pName.text.toString(),
                 price = Integer.parseInt(pPrice.text.toString()),
                 description = pDesc.text.toString()
-            )
-        )
+            ), {
+                Toast.makeText(this, "Uploaded Place", Toast.LENGTH_LONG).show()
+            }
+        ) {
+            Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+        }
 
+        return
+
+        // upload image first then save the place data
         Place().apply {
             uploadPlaceImage(imgData) { _, url ->
                 dPlace.profile_image = url
@@ -87,24 +88,30 @@ class CreatePlace : Base(R.layout.activity_create_place) {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 42 && resultCode == RESULT_OK) {
-            data?.let { image ->
-                val imageUri = image.data
-                // prevent upload of un used image
-                imgData = image.data
-                showImage()
 
+        when (resultCode) {
+            RESULT_OK -> {
+                when (requestCode) {
+                    42 -> {
+                        data?.let { image ->
+                            val imageUri = image.data
+                            // prevent upload of un used image
+                            imgData = image.data
+                            showImage()
+
+                        }
+                    }
+                }
             }
 
+            else -> Toast.makeText(this, "Failed to load Request", Toast.LENGTH_LONG).show()
         }
     }
 
     private fun showImage() {
         imgData?.let {
-
             val width = Resources.getSystem().displayMetrics.widthPixels
 
-            pImage.setImageURI(imgData)
             Picasso.get()
                 .load(it)
                 .resize(width, width * 2 / 3)
@@ -123,7 +130,7 @@ class CreatePlace : Base(R.layout.activity_create_place) {
                 .resize(width, width * 2 / 3)
                 .centerCrop()
                 .into(pImage)
-        }
+        } else Toast.makeText(this, "Image Url not Corect", Toast.LENGTH_LONG).show()
     }
 
 }

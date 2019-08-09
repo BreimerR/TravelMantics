@@ -21,3 +21,5 @@ abstract class Validatable<T>(val value: T) {
 
     abstract fun validate(): Boolean
 }
+
+

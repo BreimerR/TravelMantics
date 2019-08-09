@@ -34,6 +34,7 @@
                 android:layout_marginBottom="6dp">
 
             <ImageView
+                    android:id="@+id/emailSignInIcon"
                     android:padding="4dp"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -41,6 +42,7 @@
                     android:backgroundTint="@color/textAccent"
                     android:layout_height="match_parent"/>
             <TextView
+                    android:id="@+id/emailSignInText"
                     android:ems="20"
                     android:textSize="18sp"
                     android:paddingTop="8dp"

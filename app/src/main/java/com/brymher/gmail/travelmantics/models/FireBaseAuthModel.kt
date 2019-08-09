@@ -5,5 +5,7 @@ import com.google.firebase.database.FirebaseDatabase
 
 
 abstract class FireBaseAuthModel : FireBaseModel() {
+    lateinit var authState: FirebaseAuth.AuthStateListener
+
     val auth = FirebaseAuth.getInstance()
 }

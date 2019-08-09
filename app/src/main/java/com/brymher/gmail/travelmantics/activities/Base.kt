@@ -1,10 +1,9 @@
 package com.brymher.gmail.travelmantics.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.database.core.Context
 
 abstract class Base(private val LAYOUT: Int) : AppCompatActivity() {
 
@@ -45,11 +44,11 @@ abstract class Base(private val LAYOUT: Int) : AppCompatActivity() {
         } else super.onCreateOptionsMenu(menu)
     }
 
-    fun startActivity(context: AppCompatActivity, clazz: Class<CreateAccount>) {
+    fun <C : AppCompatActivity> startActivity(context: C, clazz: Class<out AppCompatActivity>) {
         startActivity(Intent(context, clazz))
     }
 
-    fun startActivity(context: AppCompatActivity, clazz: Class<CreateAccount>, builder: Intent.() -> Unit) {
+    fun startActivity(context: AppCompatActivity, clazz: Class<out AppCompatActivity>, builder: Intent.() -> Unit) {
         startActivity(Intent(context, clazz).apply(builder))
     }
 

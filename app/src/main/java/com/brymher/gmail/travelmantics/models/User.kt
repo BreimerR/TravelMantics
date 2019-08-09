@@ -1,22 +1,26 @@
 package com.brymher.gmail.travelmantics.models
 
 
-import android.os.Bundle
 import android.util.Log
-import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import com.brymher.gmail.travelmantics.data.User as AUser
-import com.brymher.gmail.travelmantics.lib.inputs.Validatable
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ChildEventListener
+import com.brymher.gmail.travelmantics.data.User as AUser
+import com.brymher.gmail.travelmantics.lib.inputs.Validatable
+import com.brymher.gmail.travelmantics.lib.inputs.StringValidatable
 
 open class User : FireBaseAuthModel() {
 
+
+    var error: String? = null
+
+    val hasError: Boolean
+        get() {
+            return error != null
+        }
 
     val currentUser get() = auth?.currentUser
 
@@ -38,9 +42,9 @@ open class User : FireBaseAuthModel() {
             return false
         }
 
-    val sendVerification: Unit
+    val sendVerification: Task<Void>?
         get() {
-            auth.currentUser?.sendEmailVerification()
+            return auth.currentUser?.sendEmailVerification()
         }
 
     var isAdmin: Boolean = false
@@ -86,8 +90,16 @@ open class User : FireBaseAuthModel() {
                             )
                         ).addOnSuccessListener {
                             success()
-                            sendVerification
                             auth.signOut()
+                            sendVerification?.apply {
+                                addOnSuccessListener {
+
+                                }
+
+                                addOnFailureListener { e ->
+                                    error = e.message
+                                }
+                            }
                         }.addOnFailureListener {
                             fail(Validation.DATABASE_UPDATE_FAIL)
                             auth.signOut()
@@ -159,12 +171,27 @@ open class User : FireBaseAuthModel() {
         return !hasErrors
     }
 
-    /*  fun googleRegister() {
-          val googleReg = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-              .requestIdToken(getString(R.string.default_web_client_id))
-              .requestEmail()
-              .build()
-      }*/
+
+    /*should return true for security of event being handled*/
+    fun <T : StringValidatable, V : StringValidatable> signIn(
+        email: T,
+        password: V,
+        complete: (Task<AuthResult>) -> Unit,
+        fail: (Int) -> Boolean
+
+    ) {
+        if (validateInputs(email, password)) {
+            auth.signInWithEmailAndPassword(email.value, password.value).addOnCompleteListener(complete)
+        } else if (fail(Validation.INVALID_INPUTS)) {
+            throw Exception("Unhandled Input data")
+        }
+    }
+
+    val removeStateListenre: Boolean
+        get() {
+            auth.removeAuthStateListener(authState)
+            return true
+        }
 
     object Validation {
         const val AUTH_CANCELED = 0
@@ -172,156 +199,6 @@ open class User : FireBaseAuthModel() {
         const val INVALID_INPUTS = 2
         const val SUCESS_LOGG_IN = 3
         const val DATABASE_UPDATE_FAIL = 4
-
+        const val USER_ALREADY_EXISTS = 5
     }
-
-    /* class GoogleSignInActivity : View.OnClickListener {
-
-         // [START declare_auth]
-         private lateinit var auth: FirebaseAuth
-         // [END declare_auth]
-
-         private lateinit var googleSignInClient: GoogleSignInClient
-
-         fun onCreate(savedInstanceState: Bundle?) {
-
-             // Button listeners
-             signInButton.setOnClickListener(this)
-             signOutButton.setOnClickListener(this)
-             disconnectButton.setOnClickListener(this)
-
-             // [START config_signin]
-             // Configure Google Sign In
-             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                 .requestIdToken(getString(R.string.default_web_client_id))
-                 .requestEmail()
-                 .build()
-             // [END config_signin]
-
-             googleSignInClient = GoogleSignIn.getClient(this, gso)
-
-             // [START initialize_auth]
-             // Initialize Firebase Auth
-             auth = FirebaseAuth.getInstance()
-             // [END initialize_auth]
-         }
-
-         // [START on_start_check_user]
-         public override fun onStart() {
-             super.onStart()
-             // Check if user is signed in (non-null) and update UI accordingly.
-             val currentUser = auth.currentUser
-             updateUI(currentUser)
-         }
-         // [END on_start_check_user]
-
-         // [START onactivityresult]
-         public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-             super.onActivityResult(requestCode, resultCode, data)
-
-             // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-             if (requestCode == RC_SIGN_IN) {
-                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-                 try {
-                     // Google Sign In was successful, authenticate with Firebase
-                     val account = task.getResult(ApiException::class.java)
-                     firebaseAuthWithGoogle(account!!)
-                 } catch (e: ApiException) {
-                     // Google Sign In failed, update UI appropriately
-                     Log.w(TAG, "Google sign in failed", e)
-                     // [START_EXCLUDE]
-                     updateUI(null)
-                     // [END_EXCLUDE]
-                 }
-             }
-         }
-         // [END onactivityresult]
-
-         // [START auth_with_google]
-         private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
-             Log.d(TAG, "firebaseAuthWithGoogle:" + acct.id!!)
-             // [START_EXCLUDE silent]
-             showProgressDialog()
-             // [END_EXCLUDE]
-
-             val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
-             auth.signInWithCredential(credential)
-                 .addOnCompleteListener(this) { task ->
-                     if (task.isSuccessful) {
-                         // Sign in success, update UI with the signed-in user's information
-                         Log.d(TAG, "signInWithCredential:success")
-                         val user = auth.currentUser
-                         updateUI(user)
-                     } else {
-                         // If sign in fails, display a message to the user.
-                         Log.w(TAG, "signInWithCredential:failure", task.exception)
-                         Snackbar.make(main_layout, "Authentication Failed.", Snackbar.LENGTH_SHORT).show()
-                         updateUI(null)
-                     }
-
-                     // [START_EXCLUDE]
-                     hideProgressDialog()
-                     // [END_EXCLUDE]
-                 }
-         }
-         // [END auth_with_google]
-
-         // [START signin]
-         private fun signIn() {
-             val signInIntent = googleSignInClient.signInIntent
-             startActivityForResult(signInIntent, RC_SIGN_IN)
-         }
-         // [END signin]
-
-         private fun signOut() {
-             // Firebase sign out
-             auth.signOut()
-
-             // Google sign out
-             googleSignInClient.signOut().addOnCompleteListener(this) {
-                 updateUI(null)
-             }
-         }
-
-         private fun revokeAccess() {
-             // Firebase sign out
-             auth.signOut()
-
-             // Google revoke access
-             googleSignInClient.revokeAccess().addOnCompleteListener(this) {
-                 updateUI(null)
-             }
-         }
-
-         private fun updateUI(user: FirebaseUser?) {
-             hideProgressDialog()
-             if (user != null) {
-                 status.text = getString(R.string.google_status_fmt, user.email)
-                 detail.text = getString(R.string.firebase_status_fmt, user.uid)
-
-                 signInButton.visibility = View.GONE
-                 signOutAndDisconnect.visibility = View.VISIBLE
-             } else {
-                 status.setText(R.string.signed_out)
-                 detail.text = null
-
-                 signInButton.visibility = View.VISIBLE
-                 signOutAndDisconnect.visibility = View.GONE
-             }
-         }
-
-         override fun onClick(v: View) {
-             val i = v.id
-             when (i) {
-                 R.id.signInButton -> signIn()
-                 R.id.signOutButton -> signOut()
-                 R.id.disconnectButton -> revokeAccess()
-             }
-         }
-
-         companion object {
-             private const val TAG = "GoogleActivity"
-             private const val RC_SIGN_IN = 9001
-         }
-     }*/
 }
