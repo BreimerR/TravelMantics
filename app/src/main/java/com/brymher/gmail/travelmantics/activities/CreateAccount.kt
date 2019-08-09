@@ -25,9 +25,14 @@ class CreateAccount : DialogActivity(R.layout.activity_create_account) {
                 val pwd = Password(password?.text.toString(), passwordR?.text.toString())
 
                 val n = fName.text.toString()
+                val l = lName.text.toString()
 
-                val name = if (n.isEmpty()) {
-                    n
+                val name = if (n.isNotEmpty()) {
+                    if (l.isEmpty()) {
+                        n
+                    } else "$n $l"
+                } else if (l.isNotEmpty()) {
+                    l
                 } else {
                     val e = email.value
 
@@ -77,8 +82,6 @@ class CreateAccount : DialogActivity(R.layout.activity_create_account) {
         }
 
     }
-
-
 
 
 }
